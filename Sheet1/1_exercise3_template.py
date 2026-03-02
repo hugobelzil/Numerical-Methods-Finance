@@ -14,7 +14,8 @@ def initial_value(x):
 #### exact solution at t=1 ####
 def exact_solution_at_1(x):
     # todo 3 a)
-    return
+    return np.exp(-(np.pi**2)/4) * np.sin(np.pi * x / 2)
+
 
 
 #### numerical scheme ####
