@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy.linalg as lin
+import scipy.sparse as sp # I imported an extra library as given in the cheat sheet
 
 
 # Set how floating-point errors are handled.
@@ -20,22 +21,61 @@ def exact_solution_at_1(x):
 
 #### numerical scheme ####
 def eulerexplicit(N, M):
-    # First build u_i^0 = u0(ih)
-    bc = np.linspace(0, 1, N)
-    bc = np.sin(np.pi * bc / 2)
-    print(bc)
-    return
+    # building auxiliary variables
+    h = 1/N
+    k = 1/M
 
+    # First build u_i^0 = u0(ih)
+    bc = np.linspace(0, 1, N + 1)[1:]
+    bc = np.sin(np.pi * bc / 2)
+    
+    # Building the matrix G
+    diagonal = np.ones(N)
+    upper = np.ones(N-1)
+    lower = np.ones(N-1)
+    lower[-1] = 2.0
+    G = sp.diags([lower, -2.0*diagonal, upper], [-1, 0, 1])
+
+    # Getting the matrix C
+    I = sp.eye(N)
+    C = I + (k/(h**2))*G
+    
+    # Obtaining u(1,x)
+    sol = lin.matrix_power(C.toarray(), M) @ bc
+    return sol
 
 def eulerimplicit(N, M):
-    # todo 3 b)
-    return
+    # building auxiliary variables
+    h = 1/N
+    k = 1/M
+
+    # First build u_i^0 = u0(ih)
+    bc = np.linspace(0, 1, N + 1)[1:]
+    bc = np.sin(np.pi * bc / 2)
+    
+    # Building the matrix G
+    diagonal = np.ones(N)
+    upper = np.ones(N-1)
+    lower = np.ones(N-1)
+    lower[-1] = 2.0
+    G = sp.diags([lower, -2.0*diagonal, upper], [-1, 0, 1])
+
+    # Getting the matrix C
+    I = sp.eye(N)
+    C = I - (k/(h**2))*G
+    u = bc
+    # Obtaining u(1,x)
+    for _ in range(M):
+        u = lin.solve(C.toarray(), u)
+
+    return u
 
 
 #### error analysis ####
 nb_samples = 5
-N = [2**i for i in range(2,7)]
-M = [2*(4**j) for j in range(2,7)]
+N = np.array([2**i for i in range(2,7)])
+M = np.array([(2*4**j) for j in range(2,7)]) # for question c
+# M = np.array([(4**j) for j in range(2,7)]) for question d
 l2errorexplicit = np.zeros(nb_samples)  # error vector for explicit method
 l2errorimplicit = np.zeros(nb_samples)  # error vector for implicit method
 h2k = 1 / (N ** 2) + 1 / M
