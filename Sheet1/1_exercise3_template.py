@@ -26,8 +26,6 @@ def eulerexplicit(N, M):
     print(bc)
     return
 
-eulerexplicit(5,4)
-
 
 def eulerimplicit(N, M):
     # todo 3 b)
@@ -36,8 +34,8 @@ def eulerimplicit(N, M):
 
 #### error analysis ####
 nb_samples = 5
-N = # todo for 3 c)
-M = # todo  for 3 c) and 3 d)
+N = [2**i for i in range(2,7)]
+M = [2*(4**j) for j in range(2,7)]
 l2errorexplicit = np.zeros(nb_samples)  # error vector for explicit method
 l2errorimplicit = np.zeros(nb_samples)  # error vector for implicit method
 h2k = 1 / (N ** 2) + 1 / M
