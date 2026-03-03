@@ -20,8 +20,13 @@ def exact_solution_at_1(x):
 
 #### numerical scheme ####
 def eulerexplicit(N, M):
-    # todo 3 b)
+    # First build u_i^0 = u0(ih)
+    bc = np.linspace(0, 1, N)
+    bc = np.sin(np.pi * bc / 2)
+    print(bc)
     return
+
+eulerexplicit(5,4)
 
 
 def eulerimplicit(N, M):
